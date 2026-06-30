@@ -17,14 +17,12 @@ ml-image-captioning/
 │   └── captions.txt         # 40.455 baris caption
 ├── notebooks/
 │   ├── 01_data_exploration.ipynb     # Eksplorasi dataset
-│   ├── 02_data_preprocessing.ipynb   # Cleaning caption + token
+│   ├── 02_preprocessing.ipynb        # Cleaning caption + tokenizer + split
 │   ├── 03_feature_extraction.ipynb   # Ekstraksi fitur ResNet50
-│   ├── 04_tokenizer.ipynb            # Tokenizer & vocabulary
-│   ├── 05_data_loader.ipynb          # Data loader & train/val split
-│   ├── 06_training_lstm.ipynb        # Training CNN+LSTM+Attention
-│   ├── 07_training_gru.ipynb         # Training CNN+GRU (baseline)
-│   ├── 08_evaluation.ipynb           # Evaluasi BLEU
-│   └── 09_inference.ipynb            # Inference & demo
+│   ├── 04_train_lstm.ipynb           # Training CNN+LSTM
+│   ├── 05_train_gru.ipynb            # Training CNN+GRU (baseline)
+│   ├── 06_evaluation.ipynb           # Evaluasi BLEU LSTM vs GRU
+│   └── 07_inference.ipynb            # Inference & demo (greedy + beam)
 ├── src/
 │   ├── config.py                     # Path & hyperparameter global
 │   ├── preprocess/
@@ -59,9 +57,21 @@ ml-image-captioning/
 ## Pipeline
 
 ```
-Dataset → Preprocessing → Feature Extraction → Tokenizer
-    → Data Loader → Training (LSTM / GRU) → Evaluation → Inference → Deploy
+Dataset → Preprocessing → Feature Extraction
+    → Training (LSTM / GRU) → Evaluation (BLEU) → Inference → Streamlit App
 ```
+
+## Usage
+
+```bash
+# Run notebooks sequentially
+jupyter notebook notebooks/
+
+# Or launch the web app
+streamlit run app/app.py
+```
+
+Select model (LSTM/GRU) and decoding (Greedy/Beam-3) in the sidebar, then upload an image.
 
 ## Setup
 
@@ -79,6 +89,9 @@ python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU')
 
 # 4. Run notebooks
 jupyter notebook notebooks/
+
+# 5. Streamlit app
+streamlit run app/app.py
 ```
 
 ## GPU
@@ -87,7 +100,18 @@ Project wajib dijalankan di GPU (RTX 4060). Lihat `GPU_SETUP.md` untuk detail.
 
 ## Arsitektur
 
-| Model | Encoder | Decoder | Attention |
-|-------|---------|---------|-----------|
-| **Primary** | ResNet50 | LSTM | Bahdanau |
-| **Baseline** | ResNet50 | GRU | — |
+| Model | Encoder | Decoder | Units | Parameters |
+|-------|---------|---------|-------|------------|
+| **LSTM** | ResNet50 (frozen) | LSTM | 512 | ~1.05M |
+| **GRU**  | ResNet50 (frozen) | GRU  | 512 | ~786K |
+
+## Hasil
+
+Lihat `outputs/evaluation/bleu_scores.csv` setelah menjalankan notebook 06.
+
+| Metric | LSTM | GRU |
+|--------|------|-----|
+| BLEU-1 | ...  | ... |
+| BLEU-2 | ...  | ... |
+| BLEU-3 | ...  | ... |
+| BLEU-4 | ...  | ... |
