@@ -216,3 +216,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project-specific generated artifacts
+outputs/
+model/*.keras
+model/*.h5
+model/tokenizer.pkl
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+*.egg-info/
