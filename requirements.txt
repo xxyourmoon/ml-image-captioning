@@ -6,5 +6,9 @@ Pillow==10.4.*
 streamlit==1.37.*
 nltk==3.9.*
 scikit-learn==1.5.*
+xgboost==2.1.*
+shap==0.46.*
+plotly==5.24.*
+keras-tuner==1.4.*
 tqdm==4.66.*
 jupyter==1.0.*
