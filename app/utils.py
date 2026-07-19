@@ -27,21 +27,36 @@ def load_resnet():
     return ResNet50(weights="imagenet", include_top=False, pooling="avg")
 
 
+def _ensure_model_file(model_dir, model_name):
+    model_file = os.path.join(model_dir, model_name)
+    if os.path.exists(model_file):
+        return model_file
+    split_dir = os.path.join(model_dir, "split")
+    if os.path.isdir(split_dir):
+        parts = sorted(os.listdir(split_dir))
+        if parts:
+            with open(model_file, "wb") as out:
+                for p in parts:
+                    with open(os.path.join(split_dir, p), "rb") as f:
+                        out.write(f.read())
+            return model_file
+    return None
+
+
 @st.cache_resource
 def load_model_and_tokenizer(model_choice: str):
     model_dir = LSTM_DIR if model_choice == "LSTM" else GRU_DIR
-    model_file = os.path.join(model_dir, "lstm_best.keras" if model_choice == "LSTM"
-                              else "gru_best.keras")
+    model_name = "lstm_best.keras" if model_choice == "LSTM" else "gru_best.keras"
     tok_file   = os.path.join(model_dir, "tokenizer.pkl")
 
-    if not os.path.exists(model_file):
-        st.error(f"Model file not found: `{model_file}`. "
-                 f"Upload the model files to Hugging Face Spaces via the Files tab "
-                 f"or run the upload script: "
-                 f"`bash scripts/upload_model_to_spaces.sh YOUR_SPACE_NAME`")
+    model_file = _ensure_model_file(model_dir, model_name)
+    if model_file is None:
+        st.error(f"Model file not found: `{os.path.join(model_dir, model_name)}`. "
+                 f"Push the model to GitHub first: `git add outputs/training/ && git push`")
         st.stop()
     if not os.path.exists(tok_file):
-        st.error(f"Tokenizer file not found: `{tok_file}`")
+        st.error(f"Tokenizer not found: `{tok_file}`. "
+                 f"Push it: `git add outputs/training/ && git push`")
         st.stop()
 
     model = tf.keras.models.load_model(model_file)
