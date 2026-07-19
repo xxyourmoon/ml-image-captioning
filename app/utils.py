@@ -34,6 +34,16 @@ def load_model_and_tokenizer(model_choice: str):
                               else "gru_best.keras")
     tok_file   = os.path.join(model_dir, "tokenizer.pkl")
 
+    if not os.path.exists(model_file):
+        st.error(f"Model file not found: `{model_file}`. "
+                 f"Upload the model files to Hugging Face Spaces via the Files tab "
+                 f"or run the upload script: "
+                 f"`bash scripts/upload_model_to_spaces.sh YOUR_SPACE_NAME`")
+        st.stop()
+    if not os.path.exists(tok_file):
+        st.error(f"Tokenizer file not found: `{tok_file}`")
+        st.stop()
+
     model = tf.keras.models.load_model(model_file)
     with open(tok_file, "rb") as f:
         tok = pickle.load(f)
