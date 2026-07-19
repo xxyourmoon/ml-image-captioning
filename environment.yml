@@ -18,3 +18,7 @@ dependencies:
     - scikit-learn==1.5.*
     - tqdm==4.66.*
     - jupyter==1.0.*
+    - plotly==6.9.*
+    - xgboost==3.2.*
+    - shap==0.51.*
+    - keras-tuner
