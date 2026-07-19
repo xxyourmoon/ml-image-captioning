@@ -218,7 +218,10 @@ __marimo__/
 .streamlit/secrets.toml
 
 # Project-specific generated artifacts
-outputs/
+outputs/training/**/*.keras
+outputs/training/**/*.h5
+outputs/training/**/tokenizer.pkl
+outputs/training/**/tuning/
 model/*.keras
 model/*.h5
 model/tokenizer.pkl
